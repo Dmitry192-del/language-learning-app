@@ -41,3 +41,14 @@ def login(request):
 @permission_classes([IsAuthenticated])
 def get_me(request):
     return Response(UserSerializer(request.user).data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def complete_onboarding(request):
+    user = request.user
+    user.target_language = request.data.get('target_language', 'en')
+    user.native_language = request.data.get('native_language', 'ru')
+    user.level = request.data.get('level', 'A1')
+    user.onboarding_completed = True
+    user.save()
+    return Response(UserSerializer(user).data)

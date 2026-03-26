@@ -7,4 +7,5 @@ urlpatterns = [
     path('auth/login/', views.login, name='login'),
     path('auth/me/', views.get_me, name='get_me'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/onboarding/', views.complete_onboarding, name='onboarding'),
 ]
