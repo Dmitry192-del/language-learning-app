@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import useAuthStore from '@/store/authStore'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -21,24 +22,43 @@ export default function LoginPage() {
     if (success) router.push('/dashboard')
   }
 
+  const inputStyle = {
+    width: '100%',
+    background: 'var(--bg-input)',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
+    padding: '12px 16px',
+    color: 'var(--text)',
+    outline: 'none',
+    fontSize: '14px',
+    boxSizing: 'border-box',
+    transition: 'border-color 0.2s',
+  }
+
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', position: 'relative' }}>
+
+      {/* Переключатель темы — правый верхний угол */}
+      <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
+        <ThemeToggle />
+      </div>
+
+      <div style={{ width: '100%', maxWidth: '448px' }}>
 
         {/* Логотип */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-white tracking-tight">LinguaAI</h1>
-          <p className="text-zinc-400 mt-2 text-sm">Учи языки с искусственным интеллектом</p>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h1 style={{ fontSize: '36px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.5px' }}>LinguaAI</h1>
+          <p style={{ color: 'var(--text-muted)', marginTop: '8px', fontSize: '14px' }}>Учи языки с искусственным интеллектом</p>
         </div>
 
         {/* Карточка */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8">
-          <h2 className="text-xl font-semibold text-white mb-6">Войти в аккаунт</h2>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '20px', padding: '32px' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text)', marginBottom: '24px' }}>Войти в аккаунт</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
             <div>
-              <label className="text-zinc-400 text-sm mb-1 block">Email</label>
+              <label style={{ color: 'var(--text-muted)', fontSize: '14px', display: 'block', marginBottom: '6px' }}>Email</label>
               <input
                 type="email"
                 name="email"
@@ -46,12 +66,14 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="you@example.com"
                 required
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition"
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={e => e.target.style.borderColor = 'var(--border)'}
               />
             </div>
 
             <div>
-              <label className="text-zinc-400 text-sm mb-1 block">Пароль</label>
+              <label style={{ color: 'var(--text-muted)', fontSize: '14px', display: 'block', marginBottom: '6px' }}>Пароль</label>
               <input
                 type="password"
                 name="password"
@@ -59,30 +81,43 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="Введи пароль"
                 required
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition"
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={e => e.target.style.borderColor = 'var(--border)'}
               />
             </div>
 
-            {/* Ошибка */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                <p className="text-red-400 text-sm">{error}</p>
+              <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '12px', padding: '12px 16px' }}>
+                <p style={{ color: '#f87171', fontSize: '14px' }}>{error}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-violet-600 hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 transition"
+              style={{
+                width: '100%',
+                background: 'var(--accent)',
+                color: '#fff',
+                fontWeight: 600,
+                borderRadius: '12px',
+                padding: '12px',
+                border: 'none',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                opacity: isLoading ? 0.6 : 1,
+                fontSize: '15px',
+                transition: 'opacity 0.2s',
+              }}
             >
               {isLoading ? 'Входим...' : 'Войти'}
             </button>
 
           </form>
 
-          <p className="text-zinc-500 text-sm text-center mt-6">
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px', textAlign: 'center', marginTop: '24px' }}>
             Нет аккаунта?{' '}
-            <Link href="/register" className="text-violet-400 hover:text-violet-300 transition">
+            <Link href="/register" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
               Зарегистрироваться
             </Link>
           </p>

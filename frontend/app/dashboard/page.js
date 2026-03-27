@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import useAuthStore from '@/store/authStore'
 import LogoutButton from '@/components/LogoutButton'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function DashboardPage() {
   const { user, fetchMe } = useAuthStore()
@@ -14,85 +15,78 @@ export default function DashboardPage() {
   }, [])
 
   if (!user) return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
 
       {/* Navbar */}
-      <nav className="border-b border-zinc-800 px-6 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-white">LinguaAI</h1>
-        <div className="flex items-center gap-4">
-          <span className="text-zinc-400 text-sm">{user.email}</span>
+      <nav style={{ borderBottom: '1px solid var(--border)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>LinguaAI</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{user.email}</span>
+          <ThemeToggle />
           <LogoutButton />
         </div>
       </nav>
 
       {/* Контент */}
-      <main className="max-w-4xl mx-auto px-6 py-10">
+      <main style={{ maxWidth: '896px', margin: '0 auto', padding: '40px 24px' }}>
 
         {/* Приветствие */}
-        <div className="mb-10">
-          <h2 className="text-3xl font-bold">Привет, {user.username}! 👋</h2>
-          <p className="text-zinc-400 mt-1">Продолжай учиться каждый день</p>
+        <div style={{ marginBottom: '40px' }}>
+          <h2 style={{ fontSize: '30px', fontWeight: 700, color: 'var(--text)' }}>Привет, {user.username}! 👋</h2>
+          <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>Продолжай учиться каждый день</p>
         </div>
 
         {/* Статистика */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-            <p className="text-zinc-400 text-sm mb-1">Опыт</p>
-            <p className="text-3xl font-bold text-violet-400">{user.xp} XP</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '40px' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '4px' }}>Опыт</p>
+            <p style={{ fontSize: '30px', fontWeight: 700, color: 'var(--accent)' }}>{user.xp} XP</p>
           </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-            <p className="text-zinc-400 text-sm mb-1">Серия дней</p>
-            <p className="text-3xl font-bold text-orange-400">{user.streak} 🔥</p>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '4px' }}>Серия дней</p>
+            <p style={{ fontSize: '30px', fontWeight: 700, color: 'var(--orange)' }}>{user.streak} 🔥</p>
           </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-            <p className="text-zinc-400 text-sm mb-1">Уровень</p>
-            <p className="text-3xl font-bold text-green-400">{user.level}</p>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '4px' }}>Уровень</p>
+            <p style={{ fontSize: '30px', fontWeight: 700, color: 'var(--green)' }}>{user.level}</p>
           </div>
         </div>
 
         {/* Быстрые действия */}
-        <div className="grid grid-cols-2 gap-4">
-          <button
-            onClick={() => router.push('/lessons')}
-            className="bg-zinc-900 border border-zinc-800 hover:border-violet-500 rounded-2xl p-6 text-left transition group"
-          >
-            <div className="text-3xl mb-3">📚</div>
-            <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition">Уроки</h3>
-            <p className="text-zinc-400 text-sm mt-1">Изучай новые слова и грамматику</p>
-          </button>
-
-          <button
-            onClick={() => router.push('/vocabulary')}
-            className="bg-zinc-900 border border-zinc-800 hover:border-violet-500 rounded-2xl p-6 text-left transition group"
-          >
-            <div className="text-3xl mb-3">🃏</div>
-            <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition">Карточки</h3>
-            <p className="text-zinc-400 text-sm mt-1">Повторяй слова с флэшкартами</p>
-          </button>
-
-          <button
-            onClick={() => router.push('/practice')}
-            className="bg-zinc-900 border border-zinc-800 hover:border-violet-500 rounded-2xl p-6 text-left transition group"
-          >
-            <div className="text-3xl mb-3">🤖</div>
-            <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition">AI диалоги</h3>
-            <p className="text-zinc-400 text-sm mt-1">Практикуй язык с искусственным интеллектом</p>
-          </button>
-
-          <button
-            onClick={() => router.push('/stats')}
-            className="bg-zinc-900 border border-zinc-800 hover:border-violet-500 rounded-2xl p-6 text-left transition group"
-          >
-            <div className="text-3xl mb-3">📊</div>
-            <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition">Статистика</h3>
-            <p className="text-zinc-400 text-sm mt-1">Смотри свой прогресс</p>
-          </button>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+          {[
+            { href: '/lessons', icon: '📚', title: 'Уроки', desc: 'Изучай новые слова и грамматику' },
+            { href: '/vocabulary', icon: '🃏', title: 'Карточки', desc: 'Повторяй слова с флэшкартами' },
+            { href: '/practice', icon: '🤖', title: 'AI диалоги', desc: 'Практикуй язык с искусственным интеллектом' },
+            { href: '/stats', icon: '📊', title: 'Статистика', desc: 'Смотри свой прогресс' },
+          ].map((item) => (
+            <button
+              key={item.href}
+              onClick={() => router.push(item.href)}
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: '16px',
+                padding: '24px',
+                textAlign: 'left',
+                cursor: 'pointer',
+                transition: 'border-color 0.2s',
+                color: 'var(--text)',
+              }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+            >
+              <div style={{ fontSize: '30px', marginBottom: '12px' }}>{item.icon}</div>
+              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>{item.title}</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>{item.desc}</p>
+            </button>
+          ))}
         </div>
 
       </main>
