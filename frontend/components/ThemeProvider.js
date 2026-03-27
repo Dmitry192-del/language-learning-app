@@ -10,14 +10,15 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     const saved = localStorage.getItem('theme') || 'dark'
     setTheme(saved)
-    document.documentElement.setAttribute('data-theme', saved)
+    document.documentElement.classList.add(saved)
   }, [])
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
+    document.documentElement.classList.remove(theme)
+    document.documentElement.classList.add(next)
     localStorage.setItem('theme', next)
-    document.documentElement.setAttribute('data-theme', next)
+    setTheme(next)
   }
 
   return (

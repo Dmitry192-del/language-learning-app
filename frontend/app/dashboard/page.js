@@ -15,51 +15,51 @@ export default function DashboardPage() {
   }, [])
 
   if (!user) return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center">
       <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
 
       {/* Navbar */}
-      <nav style={{ borderBottom: '1px solid var(--border)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)' }}>LinguaAI</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>{user.email}</span>
+      <nav className="border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between">
+        <h1 className="text-xl font-bold">LinguaAI</h1>
+        <div className="flex items-center gap-3">
+          <span className="text-[var(--color-text-muted)] text-sm">{user.email}</span>
           <ThemeToggle />
           <LogoutButton />
         </div>
       </nav>
 
       {/* Контент */}
-      <main style={{ maxWidth: '896px', margin: '0 auto', padding: '40px 24px' }}>
+      <main className="max-w-4xl mx-auto px-6 py-10">
 
         {/* Приветствие */}
-        <div style={{ marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '30px', fontWeight: 700, color: 'var(--text)' }}>Привет, {user.username}! 👋</h2>
-          <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>Продолжай учиться каждый день</p>
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold">Привет, {user.username}! 👋</h2>
+          <p className="text-[var(--color-text-muted)] mt-1">Продолжай учиться каждый день</p>
         </div>
 
         {/* Статистика */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '40px' }}>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '4px' }}>Опыт</p>
-            <p style={{ fontSize: '30px', fontWeight: 700, color: 'var(--accent)' }}>{user.xp} XP</p>
+        <div className="grid grid-cols-3 gap-4 mb-10">
+          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl p-6">
+            <p className="text-[var(--color-text-muted)] text-sm mb-1">Опыт</p>
+            <p className="text-3xl font-bold text-[var(--color-accent)]">{user.xp} XP</p>
           </div>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '4px' }}>Серия дней</p>
-            <p style={{ fontSize: '30px', fontWeight: 700, color: 'var(--orange)' }}>{user.streak} 🔥</p>
+          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl p-6">
+            <p className="text-[var(--color-text-muted)] text-sm mb-1">Серия дней</p>
+            <p className="text-3xl font-bold text-[var(--color-orange)]">{user.streak} 🔥</p>
           </div>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '4px' }}>Уровень</p>
-            <p style={{ fontSize: '30px', fontWeight: 700, color: 'var(--green)' }}>{user.level}</p>
+          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl p-6">
+            <p className="text-[var(--color-text-muted)] text-sm mb-1">Уровень</p>
+            <p className="text-3xl font-bold text-[var(--color-green)]">{user.level}</p>
           </div>
         </div>
 
         {/* Быстрые действия */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+        <div className="grid grid-cols-2 gap-4">
           {[
             { href: '/lessons', icon: '📚', title: 'Уроки', desc: 'Изучай новые слова и грамматику' },
             { href: '/vocabulary', icon: '🃏', title: 'Карточки', desc: 'Повторяй слова с флэшкартами' },
@@ -69,22 +69,11 @@ export default function DashboardPage() {
             <button
               key={item.href}
               onClick={() => router.push(item.href)}
-              style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderRadius: '16px',
-                padding: '24px',
-                textAlign: 'left',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s',
-                color: 'var(--text)',
-              }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              className="bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-2xl p-6 text-left transition cursor-pointer"
             >
-              <div style={{ fontSize: '30px', marginBottom: '12px' }}>{item.icon}</div>
-              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>{item.title}</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>{item.desc}</p>
+              <div className="text-3xl mb-3">{item.icon}</div>
+              <h3 className="text-lg font-semibold">{item.title}</h3>
+              <p className="text-[var(--color-text-muted)] text-sm mt-1">{item.desc}</p>
             </button>
           ))}
         </div>

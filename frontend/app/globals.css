@@ -1,52 +1,49 @@
 @import "tailwindcss";
 
-/* ── Тёмная тема (по умолчанию) ── */
-:root,
-[data-theme="dark"] {
-  --bg:          #09090b;
-  --bg-card:     #18181b;
-  --bg-input:    #27272a;
-  --border:      #3f3f46;
-  --border-hover:#6d28d9;
-  --text:        #fafafa;
-  --text-muted:  #a1a1aa;
-  --accent:      #7c3aed;
-  --accent-hover:#6d28d9;
-  --accent-text: #ffffff;
-  --orange:      #f97316;
-  --green:       #22c55e;
+@theme {
+  --color-bg: #09090b;
+  --color-bg-card: #18181b;
+  --color-bg-input: #27272a;
+  --color-border: #3f3f46;
+  --color-border-hover: #6d28d9;
+  --color-text: #fafafa;
+  --color-text-muted: #a1a1aa;
+  --color-accent: #7c3aed;
+  --color-accent-hover: #6d28d9;
+  --color-orange: #f97316;
+  --color-green: #22c55e;
 }
 
-/* ── Светлая тема ── */
-[data-theme="light"] {
-  --bg:          #f4f4f5;
-  --bg-card:     #ffffff;
-  --bg-input:    #f4f4f5;
-  --border:      #e4e4e7;
-  --border-hover:#7c3aed;
-  --text:        #09090b;
-  --text-muted:  #71717a;
-  --accent:      #7c3aed;
-  --accent-hover:#6d28d9;
-  --accent-text: #ffffff;
-  --orange:      #ea580c;
-  --green:       #16a34a;
+.dark {
+  --color-bg: #09090b;
+  --color-bg-card: #18181b;
+  --color-bg-input: #27272a;
+  --color-border: #3f3f46;
+  --color-text: #fafafa;
+  --color-text-muted: #a1a1aa;
 }
 
-/* ── Базовые стили ── */
+.light {
+  --color-bg: #f4f4f5;
+  --color-bg-card: #ffffff;
+  --color-bg-input: #f4f4f5;
+  --color-border: #e4e4e7;
+  --color-text: #09090b;
+  --color-text-muted: #71717a;
+}
+
 body {
-  background-color: var(--bg);
-  color: var(--text);
+  background-color: var(--color-bg);
+  color: var(--color-text);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* ── Переключатель темы ── */
 .theme-toggle {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,6 +53,5 @@ body {
 }
 
 .theme-toggle:hover {
-  border-color: var(--accent);
-  background: var(--bg-input);
+  border-color: var(--color-accent);
 }
