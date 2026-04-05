@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import useAuthStore from '@/store/authStore'
-import LogoutButton from '@/components/LogoutButton'
-import ThemeToggle from '@/components/ThemeToggle'
+
 import api from '@/services/api'
 
 const LANGUAGES = {
@@ -48,20 +47,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
 
-      {/* Navbar */}
-      <nav className="border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between">
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="text-xl font-bold text-[var(--color-text)] bg-transparent border-none cursor-pointer"
-        >
-          LinguaAI
-        </button>
-        <div className="flex items-center gap-3">
-          <span className="text-[var(--color-text-muted)] text-sm">{user.email}</span>
-          <ThemeToggle />
-          <LogoutButton />
-        </div>
-      </nav>
+    
 
       <main className="max-w-2xl mx-auto px-6 py-10">
         <h2 className="text-3xl font-bold mb-8">Профиль</h2>

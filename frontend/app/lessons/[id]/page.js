@@ -65,14 +65,7 @@ export default function LessonPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
 
-      {/* Navbar */}
-      <nav className="border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between">
-        <button onClick={() => router.push('/lessons')} className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition text-sm">
-          ← Назад
-        </button>
-        <h1 className="font-semibold">{lesson.title}</h1>
-        <span className="text-[var(--color-accent)] text-sm font-semibold">+{lesson.xp_reward} XP</span>
-      </nav>
+      
 
       <main className="max-w-2xl mx-auto px-6 py-10">
 

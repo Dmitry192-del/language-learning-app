@@ -11,4 +11,8 @@ urlpatterns = [
     path('lessons/', views.get_lessons, name='lessons'),
     path('lessons/<int:lesson_id>/', views.get_lesson, name='lesson'),
     path('lessons/<int:lesson_id>/complete/', views.complete_lesson, name='complete_lesson'),
+    path('flashcards/', views.flashcard_sets, name='flashcard_sets'),
+    path('flashcards/<int:set_id>/', views.flashcard_set_detail, name='flashcard_set_detail'),
+    path('flashcards/<int:set_id>/cards/', views.add_flashcard, name='add_flashcard'),
+    path('flashcards/cards/<int:card_id>/', views.delete_flashcard, name='delete_flashcard'),
 ]

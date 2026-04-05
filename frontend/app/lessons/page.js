@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import useAuthStore from '@/store/authStore'
-import ThemeToggle from '@/components/ThemeToggle'
-import LogoutButton from '@/components/LogoutButton'
+
 import api from '@/services/api'
 
 const LESSON_TYPE_LABELS = {
@@ -44,16 +43,7 @@ export default function LessonsPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
 
-      {/* Navbar */}
-      <nav className="border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between">
-        <button onClick={() => router.push('/dashboard')} className="text-xl font-bold">
-          LinguaAI
-        </button>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <LogoutButton />
-        </div>
-      </nav>
+  
 
       <main className="max-w-4xl mx-auto px-6 py-10">
 

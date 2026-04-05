@@ -86,3 +86,21 @@ class Exercise(models.Model):
 
     def __str__(self):
         return f'{self.exercise_type}: {self.question[:50]}'
+    
+class FlashcardSet(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='flashcard_sets')
+    title = models.CharField(max_length=200)
+    language = models.CharField(max_length=10, default='en')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.title} ({self.user.email})'
+
+class Flashcard(models.Model):
+    set = models.ForeignKey(FlashcardSet, on_delete=models.CASCADE, related_name='cards')
+    word = models.CharField(max_length=200)
+    translation = models.CharField(max_length=200)
+    example = models.TextField(blank=True)
+
+    def __str__(self):
+        return f'{self.word} → {self.translation}'

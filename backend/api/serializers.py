@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Word, Exercise, Lesson
+from .models import Flashcard, FlashcardSet
 
 User = get_user_model()
 
@@ -51,3 +52,19 @@ class LessonSerializer(serializers.ModelSerializer):
 
     def get_word_count(self, obj):
         return obj.words.count()
+
+class FlashcardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flashcard
+        fields = ['id', 'word', 'translation', 'example']
+
+class FlashcardSetSerializer(serializers.ModelSerializer):
+    cards = FlashcardSerializer(many=True, read_only=True)
+    card_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FlashcardSet
+        fields = ['id', 'title', 'language', 'created_at', 'card_count', 'cards']
+
+    def get_card_count(self, obj):
+        return obj.cards.count()

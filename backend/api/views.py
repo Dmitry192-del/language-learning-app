@@ -8,6 +8,8 @@ from django.utils import timezone
 from .serializers import RegisterSerializer, UserSerializer
 from .models import Lesson
 from .serializers import LessonSerializer
+from .models import Lesson, FlashcardSet, Flashcard
+from .serializers import LessonSerializer, FlashcardSetSerializer, FlashcardSerializer
 
 User = get_user_model()
 
@@ -108,3 +110,59 @@ def complete_lesson(request, lesson_id):
         })
     except Lesson.DoesNotExist:
         return Response({'error': 'Урок не найден'}, status=404)
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def flashcard_sets(request):
+    if request.method == 'GET':
+        sets = FlashcardSet.objects.filter(user=request.user)
+        return Response(FlashcardSetSerializer(sets, many=True).data)
+    
+    if request.method == 'POST':
+        set_obj = FlashcardSet.objects.create(
+            user=request.user,
+            title=request.data.get('title'),
+            language=request.data.get('language', 'en'),
+        )
+        return Response(FlashcardSetSerializer(set_obj).data, status=201)
+
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def flashcard_set_detail(request, set_id):
+    try:
+        set_obj = FlashcardSet.objects.get(id=set_id, user=request.user)
+    except FlashcardSet.DoesNotExist:
+        return Response({'error': 'Набор не найден'}, status=404)
+
+    if request.method == 'GET':
+        return Response(FlashcardSetSerializer(set_obj).data)
+    
+    if request.method == 'DELETE':
+        set_obj.delete()
+        return Response(status=204)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_flashcard(request, set_id):
+    try:
+        set_obj = FlashcardSet.objects.get(id=set_id, user=request.user)
+    except FlashcardSet.DoesNotExist:
+        return Response({'error': 'Набор не найден'}, status=404)
+
+    card = Flashcard.objects.create(
+        set=set_obj,
+        word=request.data.get('word'),
+        translation=request.data.get('translation'),
+        example=request.data.get('example', ''),
+    )
+    return Response(FlashcardSerializer(card).data, status=201)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_flashcard(request, card_id):
+    try:
+        card = Flashcard.objects.get(id=card_id, set__user=request.user)
+        card.delete()
+        return Response(status=204)
+    except Flashcard.DoesNotExist:
+        return Response({'error': 'Карточка не найдена'}, status=404)

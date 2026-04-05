@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import ThemeToggle from '@/components/ThemeToggle'
-import LogoutButton from '@/components/LogoutButton'
 import api from '@/services/api'
 
 export default function FlashcardSetPage() {
@@ -59,17 +57,7 @@ export default function FlashcardSetPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
 
-      <nav className="border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between">
-        <button onClick={() => router.push('/vocabulary')} className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition text-sm">
-          ← Назад
-        </button>
-        <h1 className="font-semibold">{set?.title}</h1>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <LogoutButton />
-        </div>
-      </nav>
-
+    
       <main className="max-w-4xl mx-auto px-6 py-10">
 
         <div className="flex items-center justify-between mb-8">
