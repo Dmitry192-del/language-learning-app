@@ -10,6 +10,7 @@ const navItems = [
   { href: '/vocabulary', icon: '🃏', label: 'Карточки' },
   { href: '/review', icon: '🔄', label: 'Повторение' },
   { href: '/practice', icon: '🤖', label: 'AI диалоги' },
+  { href: '/achievements', icon: '🏆', label: 'Достижения' },
   { href: '/stats', icon: '📊', label: 'Статистика' },
   { href: '/profile', icon: '👤', label: 'Профиль' },
 ]

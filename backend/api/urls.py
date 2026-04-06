@@ -18,4 +18,5 @@ urlpatterns = [
     path('flashcards/cards/<int:card_id>/review/', views.review_card, name='review_card'),
     path('flashcards/due/', views.due_cards, name='due_cards'),
     path('ai/chat/', views.ai_chat, name='ai_chat'),
+    path('achievements/', views.get_achievements, name='achievements'),
 ]

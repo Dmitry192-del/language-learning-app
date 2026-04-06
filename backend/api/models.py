@@ -118,3 +118,25 @@ class CardProgress(models.Model):
 
     def __str__(self):
         return f'{self.user.email} - {self.card.word}'
+
+class Achievement(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    icon = models.CharField(max_length=10)
+    xp_reward = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+
+class UserAchievement(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='achievements')
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    earned_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'achievement']
+
+    def __str__(self):
+        return f'{self.user.email} - {self.achievement.title}'

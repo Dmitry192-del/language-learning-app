@@ -14,8 +14,58 @@ from .models import Lesson, FlashcardSet, Flashcard, CardProgress
 from datetime import date, timedelta
 from groq import Groq
 from django.conf import settings
+from .models import Lesson, FlashcardSet, Flashcard, CardProgress, Achievement, UserAchievement
 
 User = get_user_model()
+
+def check_achievements(user):
+    earned = []
+    existing = set(user.achievements.values_list('achievement__code', flat=True))
+
+    def unlock(code):
+        if code not in existing:
+            try:
+                achievement = Achievement.objects.get(code=code)
+                UserAchievement.objects.create(user=user, achievement=achievement)
+                user.xp += achievement.xp_reward
+                user.save()
+                earned.append({
+                    'title': achievement.title,
+                    'icon': achievement.icon,
+                    'description': achievement.description,
+                })
+            except Achievement.DoesNotExist:
+                pass
+
+    # Проверяем уроки
+    completed_lessons = UserAchievement.objects.filter(
+        user=user, achievement__code='first_lesson'
+    ).count()
+    
+    if user.xp >= 10:
+        unlock('first_lesson')
+    if user.xp >= 50:
+        unlock('lesson_5')
+    if user.xp >= 100:
+        unlock('lesson_10')
+
+    # Streak
+    if user.streak >= 3:
+        unlock('streak_3')
+    if user.streak >= 7:
+        unlock('streak_7')
+    if user.streak >= 30:
+        unlock('streak_30')
+
+    # XP
+    if user.xp >= 100:
+        unlock('xp_100')
+    if user.xp >= 500:
+        unlock('xp_500')
+    if user.xp >= 1000:
+        unlock('xp_1000')
+
+    return earned
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -107,6 +157,8 @@ def complete_lesson(request, lesson_id):
         user.last_activity = today
         user.save()
 
+        earned_achievements = check_achievements(user)
+        
         return Response({
             'xp': user.xp,
             'streak': user.streak,
@@ -295,3 +347,27 @@ Rules:
     reply = response.choices[0].message.content
 
     return Response({'reply': reply})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_achievements(request):
+    user_achievements = UserAchievement.objects.filter(
+        user=request.user
+    ).select_related('achievement').order_by('-earned_at')
+
+    all_achievements = Achievement.objects.all()
+
+    result = []
+    earned_codes = set(user_achievements.values_list('achievement__code', flat=True))
+
+    for achievement in all_achievements:
+        result.append({
+            'code': achievement.code,
+            'title': achievement.title,
+            'description': achievement.description,
+            'icon': achievement.icon,
+            'xp_reward': achievement.xp_reward,
+            'earned': achievement.code in earned_codes,
+        })
+
+    return Response(result)
