@@ -8,6 +8,7 @@ const navItems = [
   { href: '/dashboard', icon: '🏠', label: 'Главная' },
   { href: '/lessons', icon: '📚', label: 'Уроки' },
   { href: '/vocabulary', icon: '🃏', label: 'Карточки' },
+  { href: '/review', icon: '🔄', label: 'Повторение' },
   { href: '/practice', icon: '🤖', label: 'AI диалоги' },
   { href: '/stats', icon: '📊', label: 'Статистика' },
   { href: '/profile', icon: '👤', label: 'Профиль' },

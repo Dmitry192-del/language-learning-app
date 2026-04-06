@@ -15,4 +15,7 @@ urlpatterns = [
     path('flashcards/<int:set_id>/', views.flashcard_set_detail, name='flashcard_set_detail'),
     path('flashcards/<int:set_id>/cards/', views.add_flashcard, name='add_flashcard'),
     path('flashcards/cards/<int:card_id>/', views.delete_flashcard, name='delete_flashcard'),
+    path('flashcards/cards/<int:card_id>/review/', views.review_card, name='review_card'),
+    path('flashcards/due/', views.due_cards, name='due_cards'),
+    path('ai/chat/', views.ai_chat, name='ai_chat'),
 ]

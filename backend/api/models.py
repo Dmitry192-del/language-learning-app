@@ -104,3 +104,17 @@ class Flashcard(models.Model):
 
     def __str__(self):
         return f'{self.word} → {self.translation}'
+    
+class CardProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='card_progress')
+    card = models.ForeignKey(Flashcard, on_delete=models.CASCADE, related_name='progress')
+    ease_factor = models.FloatField(default=2.5)
+    interval = models.IntegerField(default=1)
+    repetitions = models.IntegerField(default=0)
+    next_review = models.DateField(default=None, null=True, blank=True)
+
+    class Meta:
+        unique_together = ['user', 'card']
+
+    def __str__(self):
+        return f'{self.user.email} - {self.card.word}'

@@ -95,24 +95,35 @@ export default function ReviewPage() {
 
       {/* Карточка */}
       <div className="max-w-lg mx-auto">
-        <div
-          onClick={() => setFlipped(!flipped)}
-          className="bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-2xl p-12 text-center cursor-pointer transition min-h-64 flex flex-col items-center justify-center mb-6"
-          style={{ transform: flipped ? 'rotateY(180deg)' : 'rotateY(0)', transition: 'transform 0.3s' }}
+                <div
+        onClick={() => setFlipped(!flipped)}
+        className="bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-2xl p-12 text-center cursor-pointer transition min-h-64 flex flex-col items-center justify-center mb-6"
+        style={{ perspective: '1000px' }}
         >
-          {!flipped ? (
-            <>
-              <p className="text-4xl font-bold mb-3">{card.word}</p>
-              <p className="text-[var(--color-text-muted)] text-sm">Нажми чтобы увидеть перевод</p>
-            </>
-          ) : (
-            <>
-              <p className="text-3xl font-bold text-[var(--color-accent)] mb-3">{card.translation}</p>
-              {card.example && (
+        <div
+            style={{
+            transition: 'transform 0.4s',
+            transformStyle: 'preserve-3d',
+            transform: flipped ? 'rotateY(180deg)' : 'rotateY(0)',
+            position: 'relative',
+            width: '100%',
+            minHeight: '120px',
+            }}
+        >
+            {/* Лицевая сторона */}
+            <div style={{ backfaceVisibility: 'hidden', position: 'absolute', width: '100%', top: '50%', transform: 'translateY(-50%)' }}>
+            <p className="text-4xl font-bold mb-3">{card.word}</p>
+            <p className="text-[var(--color-text-muted)] text-sm">Нажми чтобы увидеть перевод</p>
+            </div>
+
+            {/* Обратная сторона */}
+            <div style={{ backfaceVisibility: 'hidden', position: 'absolute', width: '100%', top: '50%', transform: 'translateY(-50%) rotateY(180deg)' }}>
+            <p className="text-3xl font-bold text-[var(--color-accent)] mb-3">{card.translation}</p>
+            {card.example && (
                 <p className="text-[var(--color-text-muted)] text-sm italic mt-2">{card.example}</p>
-              )}
-            </>
-          )}
+            )}
+            </div>
+        </div>
         </div>
 
         {/* Кнопки */}
