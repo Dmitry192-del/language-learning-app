@@ -2,13 +2,16 @@
 
 import { useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { Geist } from 'next/font/google'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 import useAuthStore from '@/store/authStore'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import Sidebar from '@/components/Sidebar'
 
-const geist = Geist({ subsets: ['latin'] })
+const font = Plus_Jakarta_Sans({ 
+  subsets: ['latin'], 
+  weight: ['400', '500', '600', '700'] 
+})
 
 const publicRoutes = ['/login', '/register']
 
@@ -32,7 +35,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="ru" data-theme="dark">
-      <body className={geist.className}>
+      <body className={font.className}>
         <ThemeProvider>
           {isPublic ? (
             children

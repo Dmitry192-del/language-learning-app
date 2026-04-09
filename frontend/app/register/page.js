@@ -26,7 +26,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
 
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-[var(--color-text)] tracking-tight">LinguaAI</h1>
+          <h1 className="text-4xl font-bold text-[var(--color-text)] tracking-tight">Speakly</h1>
           <p className="text-[var(--color-text-muted)] mt-2 text-sm">Учи языки с искусственным интеллектом</p>
         </div>
 

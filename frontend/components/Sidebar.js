@@ -30,7 +30,7 @@ export default function Sidebar() {
 
       {/* Логотип */}
       <div className="px-6 py-6 border-b border-[var(--color-border)]">
-        <h1 className="text-xl font-bold text-[var(--color-text)]">LinguaAI</h1>
+        <h1 className="text-xl font-bold text-[var(--color-text)]">Speakly</h1>
         <p className="text-[var(--color-text-muted)] text-xs mt-1">Учи языки с AI</p>
       </div>
 

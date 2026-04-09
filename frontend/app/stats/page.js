@@ -6,6 +6,7 @@ import api from '@/services/api'
 
 export default function StatsPage() {
   const { user, fetchMe } = useAuthStore()
+  const [stats, setStats] = useState(null)
   const [achievements, setAchievements] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -16,8 +17,12 @@ export default function StatsPage() {
 
   const loadStats = async () => {
     try {
-      const res = await api.get('/achievements/')
-      setAchievements(res.data)
+      const [statsRes, achRes] = await Promise.all([
+        api.get('/stats/'),
+        api.get('/achievements/'),
+      ])
+      setStats(statsRes.data)
+      setAchievements(achRes.data)
     } catch (err) {
       console.error(err)
     } finally {
@@ -25,16 +30,13 @@ export default function StatsPage() {
     }
   }
 
-  if (!user || isLoading) return (
+  if (!user || isLoading || !stats) return (
     <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center">
       <div className="w-8 h-8 border-2 border-[var(--color-accent)] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
   const earnedAchievements = achievements.filter(a => a.earned)
-  const dailyGoal = 50
-  const progress = Math.min((user.xp % dailyGoal) / dailyGoal * 100, 100)
-
   const levels = [
     { level: 'A1', min: 0, max: 100 },
     { level: 'A2', min: 100, max: 300 },
@@ -43,9 +45,11 @@ export default function StatsPage() {
     { level: 'C1', min: 1000, max: 1500 },
   ]
   const currentLevel = levels.find(l => l.level === user.level) || levels[0]
+  const nextLevel = levels[levels.findIndex(l => l.level === user.level) + 1]
   const levelProgress = Math.min(
     ((user.xp - currentLevel.min) / (currentLevel.max - currentLevel.min)) * 100, 100
   )
+  const maxXP = Math.max(...stats.days.map(d => d.xp), 1)
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] p-8">
@@ -82,7 +86,7 @@ export default function StatsPage() {
             <div>
               <p className="font-semibold">Прогресс уровня</p>
               <p className="text-[var(--color-text-muted)] text-sm mt-0.5">
-                {user.level} → {levels[levels.findIndex(l => l.level === user.level) + 1]?.level || 'Максимум'}
+                {user.level} → {nextLevel?.level || 'Максимум'}
               </p>
             </div>
             <span className="text-[var(--color-accent)] font-bold">
@@ -97,29 +101,36 @@ export default function StatsPage() {
           </div>
         </div>
 
-        {/* Дневная цель */}
+        {/* График активности */}
         <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl p-6 mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="font-semibold">Дневная цель</p>
-              <p className="text-[var(--color-text-muted)] text-sm mt-0.5">Заработай {dailyGoal} XP сегодня</p>
-            </div>
-            <span className="text-[var(--color-accent)] font-bold">
-              {user.xp % dailyGoal} / {dailyGoal} XP
-            </span>
+          <h3 className="font-bold text-lg mb-6">📈 Активность за 7 дней</h3>
+          <div className="flex items-end gap-3 h-32">
+            {stats.days.map((day, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                <div className="w-full flex items-end justify-center" style={{ height: '96px' }}>
+                  <div
+                    className="w-full rounded-t-lg transition-all duration-500"
+                    style={{
+                      height: `${Math.max((day.xp / maxXP) * 96, day.xp > 0 ? 8 : 4)}px`,
+                      background: day.xp > 0 ? 'var(--color-accent)' : 'var(--color-bg-input)',
+                    }}
+                  />
+                </div>
+                <span className="text-xs text-[var(--color-text-muted)]">{day.date}</span>
+              </div>
+            ))}
           </div>
-          <div className="h-3 bg-[var(--color-bg-input)] rounded-full overflow-hidden">
-            <div
-              className="h-3 bg-[var(--color-green)] rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
+          {stats.days.every(d => d.xp === 0) && (
+            <p className="text-[var(--color-text-muted)] text-sm text-center mt-4">
+              Пройди уроки чтобы увидеть активность
+            </p>
+          )}
         </div>
 
         {/* Достижения */}
         <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl p-6">
           <h3 className="font-bold text-lg mb-4">
-            Последние достижения
+            🏆 Достижения — {earnedAchievements.length} / {achievements.length}
           </h3>
           {earnedAchievements.length === 0 ? (
             <p className="text-[var(--color-text-muted)] text-sm">

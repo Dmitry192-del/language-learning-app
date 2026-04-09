@@ -371,3 +371,28 @@ def get_achievements(request):
         })
 
     return Response(result)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def activity_stats(request):
+    from django.utils import timezone
+    from datetime import timedelta
+
+    user = request.user
+    today = timezone.now().date()
+    
+    # Последние 7 дней
+    days = []
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        days.append({
+            'date': day.strftime('%d.%m'),
+            'xp': 0,
+        })
+
+    return Response({
+        'total_xp': user.xp,
+        'streak': user.streak,
+        'level': user.level,
+        'days': days,
+    })

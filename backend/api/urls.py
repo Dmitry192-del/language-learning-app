@@ -19,4 +19,5 @@ urlpatterns = [
     path('flashcards/due/', views.due_cards, name='due_cards'),
     path('ai/chat/', views.ai_chat, name='ai_chat'),
     path('achievements/', views.get_achievements, name='achievements'),
+    path('stats/', views.activity_stats, name='stats'),
 ]
