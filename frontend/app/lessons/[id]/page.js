@@ -38,7 +38,12 @@ export default function LessonPage() {
   }
 
   const checkAnswer = (answer, correctAnswer) => {
-    return answer.trim().toLowerCase() === correctAnswer.trim().toLowerCase()
+  const normalize = (str) => str
+    .trim()
+    .toLowerCase()
+    .replace(/ё/g, 'е')
+    .replace(/[?!.]/g, '')
+  return normalize(answer) === normalize(correctAnswer)
   }
 
   const handleMultipleChoice = (option) => {
