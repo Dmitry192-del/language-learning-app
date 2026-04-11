@@ -46,6 +46,7 @@ class Lesson(models.Model):
     level = models.CharField(max_length=2, choices=LEVEL_CHOICES)
     lesson_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='vocabulary')
     order = models.IntegerField(default=0)
+    module = models.IntegerField(default=1)
     xp_reward = models.IntegerField(default=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -140,3 +141,16 @@ class UserAchievement(models.Model):
 
     def __str__(self):
         return f'{self.user.email} - {self.achievement.title}'
+
+class UserLessonProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lesson_progress')
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    score = models.IntegerField(default=0)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ['user', 'lesson']
+
+    def __str__(self):
+        return f'{self.user.email} - {self.lesson.title}'

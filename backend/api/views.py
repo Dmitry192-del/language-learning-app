@@ -14,9 +14,25 @@ from .models import Lesson, FlashcardSet, Flashcard, CardProgress
 from datetime import date, timedelta
 from groq import Groq
 from django.conf import settings
-from .models import Lesson, FlashcardSet, Flashcard, CardProgress, Achievement, UserAchievement
+from .models import Lesson, FlashcardSet, Flashcard, CardProgress, Achievement, UserAchievement, UserLessonProgress
+
 
 User = get_user_model()
+
+XP_LEVELS = [
+    ('A1', 0),
+    ('A2', 300),
+    ('B1', 850),
+    ('B2', 1800),
+    ('C1', 3800),
+]
+
+def get_level_by_xp(xp):
+    current = 'A1'
+    for level, threshold in XP_LEVELS:
+        if xp >= threshold:
+            current = level
+    return current
 
 def check_achievements(user):
     earned = []
@@ -116,13 +132,26 @@ def complete_onboarding(request):
 @permission_classes([IsAuthenticated])
 def get_lessons(request):
     language = request.query_params.get('language', request.user.target_language)
-    level = request.query_params.get('level', None)
+    level = request.query_params.get('level', request.user.level)
+
+    lessons = Lesson.objects.filter(language=language, level=level).order_by('module', 'order')
     
-    lessons = Lesson.objects.filter(language=language)
-    if level:
-        lessons = lessons.filter(level=level)
-    
-    return Response(LessonSerializer(lessons, many=True).data)
+    # Получаем прогресс пользователя
+    completed_ids = set(
+        UserLessonProgress.objects.filter(
+            user=request.user, completed=True
+        ).values_list('lesson_id', flat=True)
+    )
+
+    result = []
+    for i, lesson in enumerate(lessons):
+        lesson_data = LessonSerializer(lesson).data
+        lesson_data['completed'] = lesson.id in completed_ids
+        # Первый урок всегда доступен, остальные — если предыдущий пройден
+        lesson_data['locked'] = i > 0 and lessons[i-1].id not in completed_ids
+        result.append(lesson_data)
+
+    return Response(result)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -133,36 +162,61 @@ def get_lesson(request, lesson_id):
     except Lesson.DoesNotExist:
         return Response({'error': 'Урок не найден'}, status=404)
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def complete_lesson(request, lesson_id):
+    from django.utils import timezone
     try:
         lesson = Lesson.objects.get(id=lesson_id)
         user = request.user
 
-        # Начисляем XP
-        user.xp += lesson.xp_reward
+        # Отмечаем урок как пройденный
+        progress, created = UserLessonProgress.objects.get_or_create(
+            user=user, lesson=lesson
+        )
+        
+        # XP начисляем только за первое прохождение
+        xp_earned = 0
+        if not progress.completed:
+            progress.completed = True
+            progress.completed_at = timezone.now()
+            progress.score = request.data.get('score', 0)
+            progress.save()
+            xp_earned = lesson.xp_reward
+            user.xp += xp_earned
 
-        # Обновляем streak
-        today = timezone.now().date()
-        if user.last_activity:
-            diff = (today - user.last_activity).days
-            if diff == 1:
-                user.streak += 1
-            elif diff > 1:
+            # Обновляем streak
+            today = timezone.now().date()
+            if user.last_activity:
+                diff = (today - user.last_activity).days
+                if diff == 1:
+                    user.streak += 1
+                elif diff > 1:
+                    user.streak = 1
+            else:
                 user.streak = 1
-        else:
-            user.streak = 1
+            user.last_activity = today
 
-        user.last_activity = today
-        user.save()
+            # Автоматически повышаем уровень по XP
+            new_level = get_level_by_xp(user.xp)
+            level_up = new_level != user.level
+            user.level = new_level
+            user.save()
+        else:
+            level_up = False
+            user.save()
 
         earned_achievements = check_achievements(user)
-        
+
         return Response({
             'xp': user.xp,
             'streak': user.streak,
-            'xp_earned': lesson.xp_reward,
+            'xp_earned': xp_earned,
+            'level': user.level,
+            'level_up': level_up,
+            'already_completed': not created and progress.completed,
+            'achievements': earned_achievements,
         })
     except Lesson.DoesNotExist:
         return Response({'error': 'Урок не найден'}, status=404)
